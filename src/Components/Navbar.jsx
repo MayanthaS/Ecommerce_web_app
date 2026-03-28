@@ -1,7 +1,7 @@
 import { MapPin } from "lucide-react";
 import React from "react";
 import { FaCaretDown } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Navbar = () => {
   const location = null; // Replace with actual location logic
@@ -25,11 +25,19 @@ const Navbar = () => {
         </div>
         {/* Menu Section */}
         <nav>
-          <ul className="flex gap-7 items-center text-xl font-semibold">
-            <li>Home</li>
-            <li>Products</li>
-            <li>About</li>
-            <li>Contact</li>
+          <ul className="flex gap-7 items-center text-xl font-semibold cursor-pointer">
+            <NavLink to="/" className="hover:text-blue-700">
+              <li>Home</li>
+            </NavLink>
+            <NavLink to="/products" className="hover:text-blue-700">
+              <li>Products</li>
+            </NavLink>
+            <NavLink to="/about" className="hover:text-blue-700">
+              <li>About</li>
+            </NavLink>
+            <NavLink to="/contact" className="hover:text-blue-700">
+              <li>Contact</li>
+            </NavLink>
           </ul>
         </nav>
       </div>
