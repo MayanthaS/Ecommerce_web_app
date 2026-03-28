@@ -1,6 +1,7 @@
 import { MapPin } from "lucide-react";
 import React from "react";
 import { FaCaretDown } from "react-icons/fa";
+import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 
 const Navbar = () => {
@@ -24,7 +25,7 @@ const Navbar = () => {
           </div>
         </div>
         {/* Menu Section */}
-        <nav>
+        <nav className="flex gap-6 items-center">
           <ul className="flex gap-7 items-center text-xl font-semibold cursor-pointer">
             <NavLink
               to="/"
@@ -59,6 +60,12 @@ const Navbar = () => {
               <li>Contact</li>
             </NavLink>
           </ul>
+          <Link to={"/cart"} className="relative">
+            <IoCartOutline className="h-7 w-7" />
+            <span className="bg-blue-700 px-2 rounded-full absolute -top-3 -right-3 text-white">
+              0
+            </span>
+          </Link>
         </nav>
       </div>
     </div>
