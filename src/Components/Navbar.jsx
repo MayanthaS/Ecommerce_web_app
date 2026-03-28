@@ -8,7 +8,9 @@ const Navbar = () => {
         {/* Logo */}
         <div className="">
           <Link to="/">
-            <h1 className="font-bold text-4xl ">MyShop</h1>
+            <h1 className="font-bold text-4xl ">
+              <span className="text-blue-700">My</span>Shop
+            </h1>
           </Link>
         </div>
       </div>
