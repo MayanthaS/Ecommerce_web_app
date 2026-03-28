@@ -26,16 +26,36 @@ const Navbar = () => {
         {/* Menu Section */}
         <nav>
           <ul className="flex gap-7 items-center text-xl font-semibold cursor-pointer">
-            <NavLink to="/" className="hover:text-blue-700">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `${isActive ? "border-b-2 transition-all border-blue-700" : "text-blue-800"} cursor-pointer`
+              }
+            >
               <li>Home</li>
             </NavLink>
-            <NavLink to="/products" className="hover:text-blue-700">
+            <NavLink
+              to="/products"
+              className={({ isActive }) =>
+                `${isActive ? "border-b-2 transition-all border-blue-700" : "text-blue-800"} cursor-pointer`
+              }
+            >
               <li>Products</li>
             </NavLink>
-            <NavLink to="/about" className="hover:text-blue-700">
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `${isActive ? "border-b-2 transition-all border-blue-700" : "text-blue-800"} cursor-pointer`
+              }
+            >
               <li>About</li>
             </NavLink>
-            <NavLink to="/contact" className="hover:text-blue-700">
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `${isActive ? "border-b-2 transition-all border-blue-700" : "text-blue-800"} cursor-pointer`
+              }
+            >
               <li>Contact</li>
             </NavLink>
           </ul>
