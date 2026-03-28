@@ -1,3 +1,4 @@
+import { MapPin } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -12,6 +13,9 @@ const Navbar = () => {
               <span className="text-blue-700">My</span>Shop
             </h1>
           </Link>
+          <div className="flex gap-2 text-gray-800 items-center">
+            <MapPin className="text-blue-700" />
+          </div>
         </div>
       </div>
     </div>
