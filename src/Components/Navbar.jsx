@@ -3,6 +3,7 @@ import React from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
+import { Show, SignInButton, UserButton } from "@clerk/react";
 
 const Navbar = () => {
   const location = null; // Replace with actual location logic
@@ -66,6 +67,16 @@ const Navbar = () => {
               0
             </span>
           </Link>
+          <div>
+            <header>
+              <Show when="signed-out">
+                <SignInButton className="bg-blue-700 text-white hover:bg-blue-600 px-3 py-1 rounded-md cursor-pointer" />
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </header>
+          </div>
         </nav>
       </div>
     </div>
