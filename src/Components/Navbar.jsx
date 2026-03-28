@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
@@ -10,8 +10,10 @@ const Navbar = () => {
   const [district, setDistrict] = useState("");
   const [locationStatus, setLocationStatus] = useState("idle");
   const [locationError, setLocationError] = useState("");
+  const [isLocationMenuOpen, setIsLocationMenuOpen] = useState(false);
+  const locationMenuRef = useRef(null);
 
-  useEffect(() => {
+  const detectLocation = () => {
     if (!navigator.geolocation) {
       setLocationStatus("error");
       setLocationError("Geolocation not supported");
@@ -83,6 +85,26 @@ const Navbar = () => {
         maximumAge: 300000,
       },
     );
+  };
+
+  useEffect(() => {
+    detectLocation();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        locationMenuRef.current &&
+        !locationMenuRef.current.contains(event.target)
+      ) {
+        setIsLocationMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const locationLabel = (() => {
@@ -106,19 +128,67 @@ const Navbar = () => {
               <span className="text-blue-700">My</span>Shop
             </h1>
           </Link>
-          <div className="flex gap-2 text-gray-800 items-center">
-            <MapPin className="text-blue-700" />
-            <div className="font-semibold leading-tight" title={locationError}>
-              {locationStatus === "success" && district && district !== city ? (
-                <>
-                  <div>{city}</div>
-                  <div className="text-xs text-gray-600">{district}</div>
-                </>
-              ) : (
-                locationLabel
-              )}
-            </div>
-            <FaCaretDown />
+          <div
+            className="relative"
+            ref={locationMenuRef}
+          >
+            <button
+              type="button"
+              className="flex gap-2 text-gray-800 items-center"
+              onClick={() => setIsLocationMenuOpen((open) => !open)}
+              aria-expanded={isLocationMenuOpen}
+              aria-haspopup="true"
+            >
+              <MapPin className="text-blue-700" />
+              <div className="font-semibold leading-tight" title={locationError}>
+                {locationStatus === "success" && district && district !== city ? (
+                  <>
+                    <div>{city}</div>
+                    <div className="text-xs text-gray-600">{district}</div>
+                  </>
+                ) : (
+                  locationLabel
+                )}
+              </div>
+              <FaCaretDown
+                className={`transition-transform ${isLocationMenuOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {isLocationMenuOpen ? (
+              <div className="absolute left-0 top-10 z-50 w-64 rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-lg font-semibold text-gray-900">
+                      Change Location
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      We use your device to detect your city.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-gray-400 hover:text-gray-600"
+                    onClick={() => setIsLocationMenuOpen(false)}
+                    aria-label="Close location menu"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  className="mt-4 w-full rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+                  onClick={detectLocation}
+                  disabled={locationStatus === "loading"}
+                >
+                  {locationStatus === "loading"
+                    ? "Detecting..."
+                    : "Detect my location"}
+                </button>
+                {locationError ? (
+                  <p className="mt-2 text-xs text-red-600">{locationError}</p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
         {/* Menu Section */}
