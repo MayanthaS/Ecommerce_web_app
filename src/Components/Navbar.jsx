@@ -7,6 +7,7 @@ import { Show, SignInButton, UserButton } from "@clerk/react";
 
 const Navbar = () => {
   const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
   const [locationStatus, setLocationStatus] = useState("idle");
   const [locationError, setLocationError] = useState("");
 
@@ -44,6 +45,13 @@ const Navbar = () => {
             address.county ||
             address.state ||
             "";
+          const districtName =
+            address.city_district ||
+            address.suburb ||
+            address.state_district ||
+            address.county ||
+            address.district ||
+            "";
 
           if (!cityName) {
             setLocationStatus("error");
@@ -52,6 +60,7 @@ const Navbar = () => {
           }
 
           setCity(cityName);
+          setDistrict(districtName);
           setLocationStatus("success");
         } catch (error) {
           setLocationStatus("error");
@@ -78,7 +87,10 @@ const Navbar = () => {
 
   const locationLabel = (() => {
     if (locationStatus === "loading") return "Detecting...";
-    if (locationStatus === "success") return city;
+    if (locationStatus === "success") {
+      if (district && district !== city) return `${city}, ${district}`;
+      return city;
+    }
     if (locationStatus === "denied") return "Location blocked";
     if (locationStatus === "error") return "Location unavailable";
     return "Add Location";
@@ -96,9 +108,16 @@ const Navbar = () => {
           </Link>
           <div className="flex gap-2 text-gray-800 items-center">
             <MapPin className="text-blue-700" />
-            <span className="font-semibold" title={locationError}>
-              {locationLabel}
-            </span>
+            <div className="font-semibold leading-tight" title={locationError}>
+              {locationStatus === "success" && district && district !== city ? (
+                <>
+                  <div>{city}</div>
+                  <div className="text-xs text-gray-600">{district}</div>
+                </>
+              ) : (
+                locationLabel
+              )}
+            </div>
             <FaCaretDown />
           </div>
         </div>
