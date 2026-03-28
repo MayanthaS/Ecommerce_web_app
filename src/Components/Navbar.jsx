@@ -1,12 +1,89 @@
 import { MapPin } from "lucide-react";
-import React from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 import { Show, SignInButton, UserButton } from "@clerk/react";
 
 const Navbar = () => {
-  const location = null; // Replace with actual location logic
+  const [city, setCity] = useState("");
+  const [locationStatus, setLocationStatus] = useState("idle");
+  const [locationError, setLocationError] = useState("");
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setLocationStatus("error");
+      setLocationError("Geolocation not supported");
+      return;
+    }
+
+    setLocationStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+            {
+              headers: {
+                "Accept-Language": "en",
+              },
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error("Reverse geocoding failed");
+          }
+
+          const data = await response.json();
+          const address = data.address || {};
+          const cityName =
+            address.city ||
+            address.town ||
+            address.village ||
+            address.county ||
+            address.state ||
+            "";
+
+          if (!cityName) {
+            setLocationStatus("error");
+            setLocationError("City not found");
+            return;
+          }
+
+          setCity(cityName);
+          setLocationStatus("success");
+        } catch (error) {
+          setLocationStatus("error");
+          setLocationError("Unable to fetch city");
+        }
+      },
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          setLocationStatus("denied");
+          setLocationError("Location blocked");
+          return;
+        }
+
+        setLocationStatus("error");
+        setLocationError("Location unavailable");
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 300000,
+      },
+    );
+  }, []);
+
+  const locationLabel = (() => {
+    if (locationStatus === "loading") return "Detecting...";
+    if (locationStatus === "success") return city;
+    if (locationStatus === "denied") return "Location blocked";
+    if (locationStatus === "error") return "Location unavailable";
+    return "Add Location";
+  })();
+
   return (
     <div className="bg-white py-3 shadow-2xl px-4 ">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -19,8 +96,8 @@ const Navbar = () => {
           </Link>
           <div className="flex gap-2 text-gray-800 items-center">
             <MapPin className="text-blue-700" />
-            <span className="font-semibold">
-              {location ? <div></div> : "Add Location"}
+            <span className="font-semibold" title={locationError}>
+              {locationLabel}
             </span>
             <FaCaretDown />
           </div>
