@@ -4,6 +4,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 import { Show, SignInButton, UserButton } from "@clerk/react";
+import { CgClose } from "react-icons/cg";
 
 const Navbar = () => {
   const [city, setCity] = useState("");
@@ -128,10 +129,7 @@ const Navbar = () => {
               <span className="text-blue-700">My</span>Shop
             </h1>
           </Link>
-          <div
-            className="relative"
-            ref={locationMenuRef}
-          >
+          <div className="relative" ref={locationMenuRef}>
             <button
               type="button"
               className="flex gap-2 text-gray-800 items-center"
@@ -140,8 +138,13 @@ const Navbar = () => {
               aria-haspopup="true"
             >
               <MapPin className="text-blue-700" />
-              <div className="font-semibold leading-tight" title={locationError}>
-                {locationStatus === "success" && district && district !== city ? (
+              <div
+                className="font-semibold leading-tight"
+                title={locationError}
+              >
+                {locationStatus === "success" &&
+                district &&
+                district !== city ? (
                   <>
                     <div>{city}</div>
                     <div className="text-xs text-gray-600">{district}</div>
@@ -171,7 +174,7 @@ const Navbar = () => {
                     onClick={() => setIsLocationMenuOpen(false)}
                     aria-label="Close location menu"
                   >
-                    ✕
+                    <CgClose />
                   </button>
                 </div>
                 <button
