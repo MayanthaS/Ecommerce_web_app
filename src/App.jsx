@@ -6,6 +6,7 @@ import Products from "./pages/Product";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Cart from "./pages/Cart";
+import Footer from "./Components/Footer";
 
 const App = () => {
   const getLocation = () => {
@@ -48,6 +49,7 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 };
