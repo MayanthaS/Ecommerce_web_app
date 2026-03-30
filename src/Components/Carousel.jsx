@@ -75,6 +75,7 @@ const Carousel = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    pauseOnHover: false,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow to="prev" />,
   };
