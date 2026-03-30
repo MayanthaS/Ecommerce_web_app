@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./Components/Navbar";
-import Home from "./Pages/Home";
-import Products from "./Pages/Product";
-import About from "./Pages/About";
-import Contact from "./Pages/Contact";
-import Cart from "./Pages/Cart";
+import Home from "./pages/Home";
+import Products from "./pages/Product";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Cart from "./pages/Cart";
 
 const App = () => {
   const getLocation = () => {
