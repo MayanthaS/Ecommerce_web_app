@@ -19,9 +19,11 @@ const Carousel = () => {
     slidesToScroll: 1,
   };
 
+  const SlickSlider = Slider?.default ?? Slider;
+
   return (
     <div>
-      <Slider {...settings}>
+      <SlickSlider {...settings}>
         <div>
           <h3>1</h3>
         </div>
@@ -40,7 +42,7 @@ const Carousel = () => {
         <div>
           <h3>6</h3>
         </div>
-      </Slider>
+      </SlickSlider>
     </div>
   );
 };
