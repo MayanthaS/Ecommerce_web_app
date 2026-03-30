@@ -50,7 +50,7 @@ const Carousel = () => {
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="w-64 h-64 object-contain"
+                    className="w-64 h-64 object-contain hover:scale-105 transition-all  shadow-gray-600 "
                   />
                 </div>
               </div>
