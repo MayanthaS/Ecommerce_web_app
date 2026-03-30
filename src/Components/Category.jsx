@@ -13,12 +13,12 @@ const Category = () => {
   const uniqueCategories = getUniqueCategories(data, "category");
   console.log(uniqueCategories);
   return (
-    <div className="bg-[#04215a]">
+    <div className="bg-[#140b63]">
       <div className="max-w-8xl mx-auto flex gap-40 items-center justify-center py-5 px-6 ">
         {uniqueCategories.map((category, index) => (
           <button
             key={index}
-            className="bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-5 rounded"
+            className="bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-5 rounded cursor-pointer transition-colors duration-300"
           >
             {category}
           </button>
