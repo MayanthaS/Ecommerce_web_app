@@ -29,10 +29,7 @@ const Product = () => {
     }
   }, [data?.length, fetchAllProducts]);
 
-  const maxPrice = Math.max(
-    ...data.map((item) => Number(item.price) || 0),
-    0,
-  );
+  const maxPrice = Math.max(...data.map((item) => Number(item.price) || 0), 0);
 
   useEffect(() => {
     if (!data?.length) {
@@ -187,7 +184,7 @@ const Product = () => {
 
                           <button
                             type="button"
-                            className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                            className="w-full rounded-2xl bg-blue-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                           >
                             Add to cart
                           </button>
