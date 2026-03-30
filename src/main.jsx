@@ -4,21 +4,27 @@ import "./index.css";
 import App from "./App.jsx";
 import { ClerkProvider } from "@clerk/react";
 import { DataProvider } from "./context/DataProvider";
-//Import my pulishibale key from .env file
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+import { CLERK_ENABLED, CLERK_PUBLISHABLE_KEY } from "./config/auth";
 
-if (!PUBLISHABLE_KEY) {
-  throw new Error(
-    "Missing publishable key. Please set VITE_CLERK_PUBLISHABLE_KEY in your .env file.",
+if (!CLERK_ENABLED && import.meta.env.VITE_ENABLE_CLERK !== "false") {
+  console.warn(
+    "Clerk auth is disabled because VITE_CLERK_PUBLISHABLE_KEY is missing or Clerk was turned off.",
   );
 }
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <DataProvider>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      {CLERK_ENABLED ? (
+        <ClerkProvider
+          publishableKey={CLERK_PUBLISHABLE_KEY}
+          afterSignOutUrl="/"
+        >
+          <App />
+        </ClerkProvider>
+      ) : (
         <App />
-      </ClerkProvider>
+      )}
     </DataProvider>
   </StrictMode>,
 );

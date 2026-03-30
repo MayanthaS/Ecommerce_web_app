@@ -3,8 +3,62 @@ import { useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
-import { Show, SignInButton, UserButton } from "@clerk/react";
+import {
+  ClerkDegraded,
+  ClerkFailed,
+  ClerkLoaded,
+  ClerkLoading,
+  Show,
+  SignInButton,
+  UserButton,
+} from "@clerk/react";
 import { CgClose } from "react-icons/cg";
+import { CLERK_ENABLED } from "../config/auth";
+
+const AuthControls = () => {
+  if (!CLERK_ENABLED) {
+    return (
+      <span className="rounded-md border border-gray-200 px-3 py-1 text-sm text-gray-500">
+        Sign in unavailable
+      </span>
+    );
+  }
+
+  return (
+    <header>
+      <ClerkLoading>
+        <span className="rounded-md border border-gray-200 px-3 py-1 text-sm text-gray-500">
+          Loading auth...
+        </span>
+      </ClerkLoading>
+      <ClerkFailed>
+        <span className="rounded-md border border-red-200 bg-red-50 px-3 py-1 text-sm text-red-700">
+          Auth unavailable
+        </span>
+      </ClerkFailed>
+      <ClerkDegraded>
+        <span className="rounded-md border border-amber-200 bg-amber-50 px-3 py-1 text-sm text-amber-700">
+          Auth degraded
+        </span>
+      </ClerkDegraded>
+      <ClerkLoaded>
+        <Show when="signed-out">
+          <SignInButton mode="modal">
+            <button
+              type="button"
+              className="bg-blue-700 px-3 py-1 rounded-md cursor-pointer text-white hover:bg-blue-600"
+            >
+              Sign in
+            </button>
+          </SignInButton>
+        </Show>
+        <Show when="signed-in">
+          <UserButton />
+        </Show>
+      </ClerkLoaded>
+    </header>
+  );
+};
 
 const Navbar = () => {
   const [city, setCity] = useState("");
@@ -237,14 +291,7 @@ const Navbar = () => {
             </span>
           </Link>
           <div>
-            <header>
-              <Show when="signed-out">
-                <SignInButton className="bg-blue-700 text-white hover:bg-blue-600 px-3 py-1 rounded-md cursor-pointer" />
-              </Show>
-              <Show when="signed-in">
-                <UserButton />
-              </Show>
-            </header>
+            <AuthControls />
           </div>
         </nav>
       </div>

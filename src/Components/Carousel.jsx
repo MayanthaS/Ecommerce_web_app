@@ -7,8 +7,7 @@ import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import Category from "./Category";
 
 const Carousel = () => {
-  const { data, fetchAllProducts } = useContext(DataContext);
-  console.log("Carousel data:", data);
+  const { data, fetchAllProducts, isLoading, error } = useContext(DataContext);
 
   useEffect(() => {
     fetchAllProducts();
@@ -85,41 +84,55 @@ const Carousel = () => {
 
   return (
     <div>
-      <SlickSlider {...settings}>
-        {data?.slice(0, 5)?.map((item, index) => {
-          return (
-            <div
-              key={index}
-              className="bg-linear-to-r from-[#140b66] via-[#2c2769] to-[#24243e  ]-z-10 "
-            >
-              <div className="flex gap-10 justify-center h-96 items-center px-4">
-                <div className="space-y-6">
-                  <h3 className="text-white font-semibold font-sans text-sm ">
-                    Powering Your World With Best Items{" "}
-                  </h3>
-                  <h1 className="text-4xl font-bold  text-blue-700 line-clamp-2 w-[500px] ">
-                    {item.title}
-                  </h1>
-                  <p className="text-gray-300 md:w-[500px] pr-2">
-                    {item.description}
-                  </p>
-                  <button className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mb-2 mt-2">
-                    Shop Now
-                  </button>
-                </div>
-                <div className="flex-shrink-0">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-64 h-64 object-contain hover:scale-105 transition-all  shadow-gray-600 "
-                  />
+      {error ? (
+        <div className="mx-auto max-w-6xl px-4 pt-4">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            {error}
+          </div>
+        </div>
+      ) : null}
+      {isLoading && !data?.length ? (
+        <div className="mx-auto max-w-6xl px-4 py-12 text-center text-gray-600">
+          Loading products...
+        </div>
+      ) : null}
+      {data?.length > 0 ? (
+        <SlickSlider {...settings}>
+          {data.slice(0, 5).map((item, index) => {
+            return (
+              <div
+                key={index}
+                className="bg-linear-to-r from-[#12058d] to-[#24243e]-z-10 "
+              >
+                <div className="flex gap-10 justify-center h-96 items-center px-4">
+                  <div className="space-y-6">
+                    <h3 className="text-white font-semibold font-sans text-sm ">
+                      Powering Your World With Best Items{" "}
+                    </h3>
+                    <h1 className="text-4xl font-bold  text-white line-clamp-2 w-[500px] ">
+                      {item.title}
+                    </h1>
+                    <p className="text-gray-300 md:w-[500px] pr-2">
+                      {item.description}
+                    </p>
+                    <button className="bg-blue-700 hover:bg-blue-800 text-uppercase text-white font-bold py-2 px-4 rounded mb-2 mt-2">
+                      Shop Now
+                    </button>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-64 h-64 object-contain hover:scale-105 transition-all  shadow-gray-600 "
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </SlickSlider>
-      <Category />
+            );
+          })}
+        </SlickSlider>
+      ) : null}
+      {data?.length > 0 ? <Category /> : null}
     </div>
   );
 };
