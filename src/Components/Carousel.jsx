@@ -3,7 +3,7 @@ import { DataContext } from "../context/DataContext";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { Key } from "lucide-react";
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 
 const Carousel = () => {
   const { data, fetchAllProducts } = useContext(DataContext);
@@ -12,12 +12,71 @@ const Carousel = () => {
   useEffect(() => {
     fetchAllProducts();
   }, [fetchAllProducts]);
+  const SamplePrevArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        onClick={onClick}
+        className={`arrow ${className}`}
+        style={{ zIndex: 3 }}
+      >
+        <AiOutlineArrowLeft
+          className="arrows"
+          style={{
+            ...style,
+            display: "block",
+            borderRadius: "50%",
+            background: "lightgray",
+            color: "black",
+            position: "absolute",
+            padding: "10px",
+            left: "60px",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = "gray";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = "lightgray";
+          }}
+        />
+      </div>
+    );
+  };
+
+  const SampleNextArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        onClick={onClick}
+        className={`arrow ${className}`}
+        style={{ zIndex: 3 }}
+      >
+        <AiOutlineArrowRight
+          className="arrows"
+          style={{
+            ...style,
+            display: "block",
+            borderRadius: "50%",
+            background: "lightgray",
+            color: "black",
+            position: "absolute",
+            padding: "10px",
+            right: "60px",
+          }}
+        />
+      </div>
+    );
+  };
   var settings = {
     dots: false,
+    autoplay: true,
+    autoplaySpeed: 3000,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow to="prev" />,
   };
 
   const SlickSlider = Slider?.default ?? Slider;
