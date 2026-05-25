@@ -6,6 +6,13 @@ import ProductCard from "../Components/ProductCard";
 import Loading from "../assets/Loading4.webm";
 import { useData } from "../context/useData";
 
+const getProductBrand = (product) => {
+  if (product.brand) return product.brand;
+  if (!product.title) return "Unknown";
+
+  return product.title.split(/[\s-]+/)[0];
+};
+
 export const Product = () => {
   const { data, fetchAllProducts, isLoading, error } = useData();
   const [search, setSearch] = useState("");
@@ -29,13 +36,15 @@ export const Product = () => {
   }, [data]);
 
   const brands = useMemo(() => {
-    const productBrands = data?.map((item) => item.brand).filter(Boolean);
+    const productBrands = data?.map((item) => getProductBrand(item));
 
     return ["All", ...new Set(productBrands)];
   }, [data]);
 
   const maxPrice = useMemo(() => {
-    return Math.ceil(Math.max(...data.map((item) => Number(item.price) || 0), 5000));
+    return Math.ceil(
+      Math.max(...data.map((item) => Number(item.price) || 0), 5000),
+    );
   }, [data]);
 
   const handleSearchChange = (value) => {
@@ -69,7 +78,7 @@ export const Product = () => {
     const normalizedSearch = search.trim().toLowerCase();
 
     return data?.filter((item) => {
-      const productBrand = item.brand || "All";
+      const productBrand = getProductBrand(item);
 
       return (
         item.title?.toLowerCase().includes(normalizedSearch) &&
@@ -123,7 +132,13 @@ export const Product = () => {
               <div className="flex flex-1 flex-col items-center">
                 <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-4 md:gap-7 lg:mt-10">
                   {paginatedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard
+                      key={product.id}
+                      product={{
+                        ...product,
+                        brand: getProductBrand(product),
+                      }}
+                    />
                   ))}
                 </div>
                 <Pagination
