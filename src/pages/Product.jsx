@@ -1,236 +1,176 @@
-import { useContext, useEffect, useState } from "react";
-import { DataContext } from "../context/DataContext";
+import React, { useEffect, useMemo, useState } from "react";
 import FilterSection from "../Components/FilterSection";
-import loadingVideo from "../assets/Loading4.webm";
+import MobileFilter from "../Components/MobileFilter";
+import Pagination from "../Components/Pagination";
+import ProductCard from "../Components/ProductCard";
+import Loading from "../assets/Loading4.webm";
+import { useData } from "../context/useData";
 
-const loadingVideoStyle = {
-  filter:
-    "brightness(0) saturate(100%) invert(15%) sepia(96%) saturate(3200%) hue-rotate(219deg) brightness(84%) contrast(112%)",
-};
-
-const formatPrice = (value) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 2,
-  }).format(value || 0);
-};
-
-const Product = () => {
-  const { data, fetchAllProducts, isLoading, error } = useContext(DataContext);
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("featured");
-  const [selectedMaxPrice, setSelectedMaxPrice] = useState(0);
+export const Product = () => {
+  const { data, fetchAllProducts, isLoading, error } = useData();
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All");
+  const [brand, setBrand] = useState("All");
+  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [page, setPage] = useState(1);
+  const [openFilter, setOpenFilter] = useState(false);
 
   useEffect(() => {
-    if (!data?.length) {
-      fetchAllProducts();
-    }
-  }, [data?.length, fetchAllProducts]);
+    fetchAllProducts();
+    window.scrollTo(0, 0);
+  }, [fetchAllProducts]);
 
-  const maxPrice = Math.max(...data.map((item) => Number(item.price) || 0), 0);
+  const categories = useMemo(() => {
+    const productCategories = data
+      ?.map((item) => item.category)
+      .filter(Boolean);
 
-  useEffect(() => {
-    if (!data?.length) {
-      return;
-    }
+    return ["All", ...new Set(productCategories)];
+  }, [data]);
 
-    setSelectedMaxPrice(maxPrice);
-  }, [data?.length, maxPrice]);
+  const brands = useMemo(() => {
+    const productBrands = data?.map((item) => item.brand).filter(Boolean);
 
-  const categories = ["all", ...new Set(data.map((item) => item.category))];
+    return ["All", ...new Set(productBrands)];
+  }, [data]);
 
-  const filteredProducts = data
-    .filter((item) => {
-      const matchesCategory =
-        activeCategory === "all" || item.category === activeCategory;
-      const matchesSearch = item.title
-        .toLowerCase()
-        .includes(searchTerm.trim().toLowerCase());
-      const matchesPrice = (Number(item.price) || 0) <= selectedMaxPrice;
+  const maxPrice = useMemo(() => {
+    return Math.ceil(Math.max(...data.map((item) => Number(item.price) || 0), 5000));
+  }, [data]);
 
-      return matchesCategory && matchesSearch && matchesPrice;
-    })
-    .sort((leftItem, rightItem) => {
-      if (sortBy === "price-low") {
-        return (Number(leftItem.price) || 0) - (Number(rightItem.price) || 0);
-      }
+  const handleSearchChange = (value) => {
+    setSearch(value);
+    setPage(1);
+  };
 
-      if (sortBy === "price-high") {
-        return (Number(rightItem.price) || 0) - (Number(leftItem.price) || 0);
-      }
+  const handlePriceRangeChange = (value) => {
+    setPriceRange(value);
+    setPage(1);
+  };
 
-      if (sortBy === "name-asc") {
-        return leftItem.title.localeCompare(rightItem.title);
-      }
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+    setPage(1);
+    setOpenFilter(false);
+  };
 
-      if (sortBy === "name-desc") {
-        return rightItem.title.localeCompare(leftItem.title);
-      }
+  const handleBrandChange = (event) => {
+    setBrand(event.target.value);
+    setPage(1);
+    setOpenFilter(false);
+  };
 
-      return 0;
+  const pageHandler = (selectedPage) => {
+    setPage(selectedPage);
+    window.scrollTo(0, 0);
+  };
+
+  const filteredData = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return data?.filter((item) => {
+      const productBrand = item.brand || "All";
+
+      return (
+        item.title?.toLowerCase().includes(normalizedSearch) &&
+        (category === "All" || item.category === category) &&
+        (brand === "All" || productBrand === brand) &&
+        Number(item.price) >= priceRange[0] &&
+        Number(item.price) <= priceRange[1]
+      );
     });
+  }, [brand, category, data, priceRange, search]);
 
-  const resetFilters = () => {
-    setActiveCategory("all");
-    setSearchTerm("");
-    setSortBy("featured");
-    setSelectedMaxPrice(maxPrice);
+  const dynamicPage = Math.ceil((filteredData?.length || 0) / 8);
+  const paginatedProducts = filteredData?.slice(page * 8 - 8, page * 8);
+  const filterProps = {
+    search,
+    setSearch: handleSearchChange,
+    brand,
+    setBrand,
+    brands,
+    maxPrice,
+    priceRange,
+    setPriceRange: handlePriceRangeChange,
+    category,
+    setCategory,
+    categories,
+    handleCategoryChange,
+    handleBrandChange,
+    productCount: filteredData?.length || 0,
   };
 
   return (
-    <div className="bg-slate-50 py-10">
-      <div className="max-w-7xl mx-auto px-4">
+    <div>
+      <div className="mx-auto mb-10 max-w-6xl px-4 pt-4">
+        <MobileFilter
+          openFilter={openFilter}
+          setOpenFilter={setOpenFilter}
+          {...filterProps}
+        />
+
         {error ? (
-          <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             {error}
           </div>
         ) : null}
-        {isLoading && !data?.length ? (
-          <div className="flex min-h-[65vh] items-center justify-center rounded-3xl bg-white shadow-sm">
+
+        {data?.length > 0 ? (
+          <div className="flex gap-8">
+            <FilterSection {...filterProps} />
+
+            {filteredData?.length > 0 ? (
+              <div className="flex flex-1 flex-col items-center">
+                <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-4 md:gap-7 lg:mt-10">
+                  {paginatedProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+                <Pagination
+                  pageHandler={pageHandler}
+                  page={page}
+                  dynamicPage={dynamicPage}
+                />
+              </div>
+            ) : (
+              <div className="mt-10 flex min-h-[420px] flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-10 text-center shadow-sm">
+                <div>
+                  <p className="text-2xl font-bold text-slate-900">
+                    No products found
+                  </p>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Try changing your search, category, brand, or price range.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : isLoading ? (
+          <div className="flex h-[400px] items-center justify-center">
             <video
               muted
               autoPlay
               loop
               playsInline
-              className="items-center w-56 drop-shadow-[0_0_28px_rgba(30,64,175,0.45)] md:w-72"
-              style={loadingVideoStyle}
+              className="h-32 w-32 object-contain"
+              aria-label="Loading products"
             >
-              <source src={loadingVideo} type="video/webm" />
+              <source src={Loading} type="video/webm" />
             </video>
           </div>
-        ) : null}
-        {data?.length > 0 ? (
-          <div className="grid gap-8 lg:grid-cols-[290px_minmax(0,1fr)]">
-            <div className="lg:sticky lg:top-24 lg:self-start">
-              <FilterSection
-                categories={categories}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                maxPrice={maxPrice}
-                selectedMaxPrice={selectedMaxPrice}
-                onMaxPriceChange={setSelectedMaxPrice}
-                productCount={filteredProducts.length}
-                onReset={resetFilters}
-              />
-            </div>
-            <div className="space-y-6">
-              <div className="rounded-3xl bg-white p-6 shadow-sm">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">
-                      Product catalog
-                    </p>
-                    <h1 className="mt-2 text-3xl font-bold text-slate-900">
-                      Explore every category in one place
-                    </h1>
-                    <p className="mt-2 max-w-2xl text-sm text-slate-500">
-                      Browse curated picks, compare prices, and narrow the list
-                      with live filters without leaving the page.
-                    </p>
-                  </div>
-                  <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-600">
-                    Showing{" "}
-                    <span className="font-bold text-slate-900">
-                      {filteredProducts.length}
-                    </span>{" "}
-                    of{" "}
-                    <span className="font-bold text-slate-900">
-                      {data.length}
-                    </span>{" "}
-                    products
-                  </div>
-                </div>
-              </div>
-
-              {filteredProducts.length > 0 ? (
-                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                  {filteredProducts.map((item) => {
-                    return (
-                      <article
-                        key={item.id}
-                        className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                      >
-                        <div className="flex h-64 items-center justify-center bg-slate-50 p-6">
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            className="h-full w-full object-contain transition duration-300 group-hover:scale-105"
-                          />
-                        </div>
-                        <div className="space-y-4 p-5">
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700">
-                              {item.category}
-                            </span>
-                            <span className="text-lg font-bold text-slate-900">
-                              {formatPrice(item.price)}
-                            </span>
-                          </div>
-
-                          <div>
-                            <h2 className="line-clamp-2 text-lg font-bold text-slate-900">
-                              {item.title}
-                            </h2>
-                            <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
-                              {item.description}
-                            </p>
-                          </div>
-
-                          <button
-                            type="button"
-                            className="w-full rounded-2xl bg-blue-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-                          >
-                            Add to cart
-                          </button>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white px-6 text-center">
-                  <video
-                    muted
-                    autoPlay
-                    loop
-                    playsInline
-                    className="w-40 drop-shadow-[0_0_28px_rgba(30,64,175,0.45)]"
-                    style={loadingVideoStyle}
-                  >
-                    <source src={loadingVideo} type="video/webm" />
-                  </video>
-                  <h2 className="mt-4 text-2xl font-bold text-slate-900">
-                    No matching products
-                  </h2>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
-                    Try changing the category, search text, or price range to
-                    bring products back into the list.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={resetFilters}
-                    className="mt-5 rounded-2xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
-                  >
-                    Clear filters
-                  </button>
-                </div>
-              )}
+        ) : (
+          <div className="flex min-h-[400px] items-center justify-center text-center">
+            <div className="rounded-2xl border border-slate-200 bg-white px-8 py-10 shadow-sm">
+              <p className="text-lg font-semibold text-slate-900">
+                No items found
+              </p>
+              <p className="mt-2 text-sm text-slate-500">
+                Try checking again later.
+              </p>
             </div>
           </div>
-        ) : !isLoading ? (
-          <div className="flex min-h-[300px] items-center justify-center rounded-3xl bg-white text-center shadow-sm">
-            No items Found
-          </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
 };
-
-export default Product;

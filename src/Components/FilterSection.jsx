@@ -1,39 +1,28 @@
 const FilterSection = ({
-  categories,
-  activeCategory,
-  onCategoryChange,
-  searchTerm,
-  onSearchChange,
-  sortBy,
-  onSortChange,
-  maxPrice,
-  selectedMaxPrice,
-  onMaxPriceChange,
-  productCount,
-  onReset,
+  search,
+  setSearch,
+  brand,
+  brands = ["All"],
+  maxPrice = 5000,
+  priceRange,
+  setPriceRange,
+  category,
+  categories = ["All"],
+  handleCategoryChange,
+  handleBrandChange,
+  productCount = 0,
 }) => {
   return (
-    <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <aside className="hidden h-fit w-72 shrink-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:block">
       <div className="border-b border-slate-200 pb-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Filters
-            </p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">
-              Refine products
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onReset}
-            className="text-sm font-semibold text-blue-700 transition-colors hover:text-blue-900"
-          >
-            Reset
-          </button>
-        </div>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Filters
+        </p>
+        <h2 className="mt-1 text-2xl font-bold text-slate-900">
+          Refine products
+        </h2>
         <p className="mt-3 text-sm text-slate-500">
-          {productCount} item{productCount === 1 ? "" : "s"} match your filters.
+          {productCount} item{productCount === 1 ? "" : "s"} found
         </p>
       </div>
 
@@ -48,42 +37,60 @@ const FilterSection = ({
           <input
             id="product-search"
             type="text"
-            value={searchTerm}
-            onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Search by product title"
-            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search products"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
           />
         </section>
 
         <section>
-          <p className="mb-3 text-sm font-semibold text-slate-800">Category</p>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => {
-              const isActive = activeCategory === category;
+          <label
+            htmlFor="product-category"
+            className="mb-2 block text-sm font-semibold text-slate-800"
+          >
+            Category
+          </label>
+          <select
+            id="product-category"
+            value={category}
+            onChange={handleCategoryChange}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm capitalize text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+          >
+            {categories.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </section>
 
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => onCategoryChange(category)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium capitalize transition ${
-                    isActive
-                      ? "bg-blue-700 text-white shadow-md shadow-blue-200"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  {category}
-                </button>
-              );
-            })}
-          </div>
+        <section>
+          <label
+            htmlFor="product-brand"
+            className="mb-2 block text-sm font-semibold text-slate-800"
+          >
+            Brand
+          </label>
+          <select
+            id="product-brand"
+            value={brand}
+            onChange={handleBrandChange}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm capitalize text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
+          >
+            {brands.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
         </section>
 
         <section>
           <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-slate-800">Max price</p>
+            <p className="text-sm font-semibold text-slate-800">Price range</p>
             <span className="text-sm font-semibold text-blue-700">
-              ${selectedMaxPrice}
+              ${priceRange[0]} - ${priceRange[1]}
             </span>
           </div>
           <input
@@ -91,31 +98,16 @@ const FilterSection = ({
             min="0"
             max={maxPrice}
             step="1"
-            value={selectedMaxPrice}
-            onChange={(event) => onMaxPriceChange(Number(event.target.value))}
+            value={priceRange[1]}
+            onChange={(event) =>
+              setPriceRange([priceRange[0], Number(event.target.value)])
+            }
             className="w-full accent-blue-700"
           />
-        </section>
-
-        <section>
-          <label
-            htmlFor="product-sort"
-            className="mb-2 block text-sm font-semibold text-slate-800"
-          >
-            Sort by
-          </label>
-          <select
-            id="product-sort"
-            value={sortBy}
-            onChange={(event) => onSortChange(event.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white"
-          >
-            <option value="featured">Featured</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-            <option value="name-asc">Name: A to Z</option>
-            <option value="name-desc">Name: Z to A</option>
-          </select>
+          <div className="mt-2 flex justify-between text-xs font-medium text-slate-500">
+            <span>$0</span>
+            <span>${maxPrice}</span>
+          </div>
         </section>
       </div>
     </aside>

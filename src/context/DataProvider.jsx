@@ -13,12 +13,10 @@ export const DataProvider = ({ children }) => {
     setError("");
 
     try {
-      const response = await axios.get(
-        "https://fakestoreapi.com/products?limit=150",
-        {
-          timeout: 8000,
-        },
-      );
+      // Use the proxy endpoint
+      const response = await axios.get("/api/products?limit=150", {
+        timeout: 8000,
+      });
 
       setData(response.data);
     } catch (err) {
