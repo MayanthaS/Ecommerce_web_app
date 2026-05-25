@@ -2,6 +2,11 @@
 
 MyShop is a responsive ecommerce web application built with React, Vite, Tailwind CSS, and React Router. It includes product browsing, filtering, product detail pages, cart management, toast notifications, and mobile-friendly layouts.
 
+## Links
+
+- GitHub Repository: https://github.com/MayanthaS/Ecommerce_web_app
+- Live Demo: https://mayanthas.github.io/Ecommerce_web_app/
+
 ## Features
 
 - Responsive homepage carousel
