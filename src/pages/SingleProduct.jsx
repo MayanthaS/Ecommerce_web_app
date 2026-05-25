@@ -1,16 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Loading from "../assets/Loading4.webm";
 import { IoCartOutline } from "react-icons/io5";
+import { useCart } from "../context/useCart";
 import { useData } from "../context/useData";
 
 const SingleProduct = () => {
   const params = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
   const { data } = useData();
   const [singleProduct, setSingleProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const getSingleProduct = async () => {
@@ -54,6 +58,11 @@ const SingleProduct = () => {
     singleProduct?.price +
       (singleProduct?.price * (singleProduct?.discount || 0)) / 100,
   );
+
+  const handleAddToCart = () => {
+    addToCart(singleProduct, quantity);
+    navigate("/cart");
+  };
 
   return (
     <>
@@ -111,15 +120,17 @@ const SingleProduct = () => {
                 <input
                   type="number"
                   min={1}
-                  defaultValue={1}
-                  className="w-20 border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={quantity}
+                  onChange={(event) => setQuantity(event.target.value)}
+                  className="w-20 border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-700"
                 />
               </div>
 
               <div className="flex gap-4 mt-4">
                 <button
                   type="button"
-                  className="px-6 flex gap-2 py-2 text-lg bg-blue-700 text-white rounded-md"
+                  onClick={handleAddToCart}
+                  className="px-6 flex gap-2 py-2 text-lg bg-blue-700 text-white rounded-md hover:bg-blue-600"
                 >
                   <IoCartOutline className="w-6 h-6" /> Add to Cart
                 </button>

@@ -14,6 +14,7 @@ import {
 } from "@clerk/react";
 import { CgClose } from "react-icons/cg";
 import { CLERK_ENABLED } from "../config/auth";
+import { useCart } from "../context/useCart";
 
 const AuthControls = () => {
   if (!CLERK_ENABLED) {
@@ -61,6 +62,7 @@ const AuthControls = () => {
 };
 
 const Navbar = () => {
+  const { cartItem } = useCart();
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [locationStatus, setLocationStatus] = useState("idle");
@@ -119,7 +121,7 @@ const Navbar = () => {
           setCity(cityName);
           setDistrict(districtName);
           setLocationStatus("success");
-        } catch (error) {
+        } catch {
           setLocationStatus("error");
           setLocationError("Unable to fetch city");
         }
@@ -172,6 +174,7 @@ const Navbar = () => {
     if (locationStatus === "error") return "Location unavailable";
     return "Add Location";
   })();
+  const cartCount = cartItem.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <div className="bg-white py-3 shadow-2xl px-4 ">
@@ -287,7 +290,7 @@ const Navbar = () => {
           <Link to={"/cart"} className="relative">
             <IoCartOutline className="h-7 w-7" />
             <span className="bg-blue-700 px-2 rounded-full absolute -top-3 -right-3 text-white">
-              0
+              {cartCount}
             </span>
           </Link>
           <div>

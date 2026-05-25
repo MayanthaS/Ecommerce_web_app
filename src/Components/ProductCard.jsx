@@ -1,6 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/useCart";
 
 const ProductCard = ({ product }) => {
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    navigate("/cart");
+  };
+
   return (
     <article className="group rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <Link
@@ -35,6 +44,7 @@ const ProductCard = ({ product }) => {
         </Link>
         <button
           type="button"
+          onClick={handleAddToCart}
           className="rounded-lg bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-600 md:px-4 md:text-sm"
         >
           Add

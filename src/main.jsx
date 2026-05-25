@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { ClerkProvider } from "@clerk/react";
+import { CartProvider } from "./context/CartContext";
 import { DataProvider } from "./context/DataProvider";
 import { CLERK_ENABLED, CLERK_PUBLISHABLE_KEY } from "./config/auth";
 
@@ -15,16 +16,18 @@ if (!CLERK_ENABLED && import.meta.env.VITE_ENABLE_CLERK !== "false") {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <DataProvider>
-      {CLERK_ENABLED ? (
-        <ClerkProvider
-          publishableKey={CLERK_PUBLISHABLE_KEY}
-          afterSignOutUrl="/"
-        >
+      <CartProvider>
+        {CLERK_ENABLED ? (
+          <ClerkProvider
+            publishableKey={CLERK_PUBLISHABLE_KEY}
+            afterSignOutUrl="/"
+          >
+            <App />
+          </ClerkProvider>
+        ) : (
           <App />
-        </ClerkProvider>
-      ) : (
-        <App />
-      )}
+        )}
+      </CartProvider>
     </DataProvider>
   </StrictMode>,
 );
