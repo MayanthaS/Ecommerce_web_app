@@ -13,58 +13,30 @@ const Carousel = () => {
     fetchAllProducts();
   }, [fetchAllProducts]);
   const SamplePrevArrow = (props) => {
-    const { className, style, onClick } = props;
+    const { className, onClick } = props;
     return (
-      <div
+      <button
+        type="button"
         onClick={onClick}
-        className={`arrow ${className}`}
-        style={{ zIndex: 3 }}
+        className={`${className} !left-4 !z-10 hidden h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-950 shadow-md transition hover:bg-white md:!flex lg:!left-10`}
+        aria-label="Previous slide"
       >
-        <AiOutlineArrowLeft
-          className="arrows"
-          style={{
-            ...style,
-            display: "block",
-            borderRadius: "50%",
-            background: "lightgray",
-            color: "black",
-            position: "absolute",
-            padding: "10px",
-            left: "60px",
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = "gray";
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = "lightgray";
-          }}
-        />
-      </div>
+        <AiOutlineArrowLeft className="h-5 w-5" />
+      </button>
     );
   };
 
   const SampleNextArrow = (props) => {
-    const { className, style, onClick } = props;
+    const { className, onClick } = props;
     return (
-      <div
+      <button
+        type="button"
         onClick={onClick}
-        className={`arrow ${className}`}
-        style={{ zIndex: 3 }}
+        className={`${className} !right-4 !z-10 hidden h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-950 shadow-md transition hover:bg-white md:!flex lg:!right-10`}
+        aria-label="Next slide"
       >
-        <AiOutlineArrowRight
-          className="arrows"
-          style={{
-            ...style,
-            display: "block",
-            borderRadius: "50%",
-            background: "lightgray",
-            color: "black",
-            position: "absolute",
-            padding: "10px",
-            right: "60px",
-          }}
-        />
-      </div>
+        <AiOutlineArrowRight className="h-5 w-5" />
+      </button>
     );
   };
   var settings = {
@@ -97,25 +69,25 @@ const Carousel = () => {
         </div>
       ) : null}
       {data?.length > 0 ? (
-        <SlickSlider {...settings}>
+        <SlickSlider {...settings} className="overflow-hidden">
           {data.slice(0, 5).map((item, index) => {
             return (
               <div
                 key={index}
-                className="bg-linear-to-r from-[#12058d] to-[#24243e]-z-10 "
+                className="bg-linear-to-r from-[#12058d] to-[#24243e]"
               >
-                <div className="flex gap-10 justify-center h-96 items-center px-4">
-                  <div className="space-y-6">
-                    <h3 className="text-white font-semibold font-sans text-sm ">
-                      Powering Your World With Best Items{" "}
+                <div className="mx-auto flex min-h-[520px] max-w-6xl flex-col-reverse items-center justify-center gap-6 px-4 py-8 text-center sm:min-h-[560px] md:h-96 md:min-h-0 md:flex-row md:gap-10 md:py-0 md:text-left">
+                  <div className="max-w-xl space-y-4 md:space-y-6">
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-100 sm:text-sm">
+                      Powering Your World With Best Items
                     </h3>
-                    <h1 className="text-4xl font-bold  text-white line-clamp-2 w-[500px] ">
+                    <h1 className="line-clamp-3 text-2xl font-bold text-white sm:text-3xl md:line-clamp-2 md:text-4xl">
                       {item.title}
                     </h1>
-                    <p className="text-gray-300 md:w-[500px] pr-2">
+                    <p className="line-clamp-3 text-sm leading-6 text-gray-300 sm:text-base md:line-clamp-4">
                       {item.description}
                     </p>
-                    <button className="bg-blue-700 hover:bg-blue-800 text-uppercase text-white font-bold py-2 px-4 rounded mb-2 mt-2">
+                    <button className="mb-2 mt-2 rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-800">
                       Shop Now
                     </button>
                   </div>
@@ -123,7 +95,7 @@ const Carousel = () => {
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-64 h-64 object-contain hover:scale-105 transition-all  shadow-gray-600 "
+                      className="h-44 w-44 object-contain transition-all hover:scale-105 sm:h-56 sm:w-56 md:h-64 md:w-64"
                     />
                   </div>
                 </div>

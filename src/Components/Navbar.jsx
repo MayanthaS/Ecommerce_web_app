@@ -177,26 +177,26 @@ const Navbar = () => {
   const cartCount = cartItem.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <div className="bg-white py-3 shadow-2xl px-4 ">
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
+    <div className="bg-white px-4 py-3 shadow-2xl">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
           <Link to="/">
-            <h1 className="font-bold text-4xl ">
+            <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl">
               <span className="text-blue-700">My</span>Shop
             </h1>
           </Link>
-          <div className="relative" ref={locationMenuRef}>
+          <div className="relative max-w-[170px] sm:max-w-none" ref={locationMenuRef}>
             <button
               type="button"
-              className="flex gap-2 text-gray-800 items-center"
+              className="flex items-center gap-2 text-sm text-gray-800 sm:text-base"
               onClick={() => setIsLocationMenuOpen((open) => !open)}
               aria-expanded={isLocationMenuOpen}
               aria-haspopup="true"
             >
               <MapPin className="text-blue-700" />
               <div
-                className="font-semibold leading-tight"
+                className="truncate font-semibold leading-tight"
                 title={locationError}
               >
                 {locationStatus === "success" &&
@@ -215,7 +215,7 @@ const Navbar = () => {
               />
             </button>
             {isLocationMenuOpen ? (
-              <div className="absolute left-0 top-10 z-50 w-64 rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+              <div className="absolute right-0 top-10 z-50 w-64 rounded-xl border border-gray-200 bg-white p-4 shadow-xl sm:left-0 sm:right-auto">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-lg font-semibold text-gray-900">
@@ -252,8 +252,8 @@ const Navbar = () => {
           </div>
         </div>
         {/* Menu Section */}
-        <nav className="flex gap-6 items-center">
-          <ul className="flex gap-7 items-center text-xl font-semibold cursor-pointer">
+        <nav className="flex flex-wrap items-center justify-between gap-4 md:justify-end md:gap-6">
+          <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-semibold sm:text-base md:gap-7 md:text-xl">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -289,7 +289,7 @@ const Navbar = () => {
           </ul>
           <Link to={"/cart"} className="relative">
             <IoCartOutline className="h-7 w-7" />
-            <span className="bg-blue-700 px-2 rounded-full absolute -top-3 -right-3 text-white">
+            <span className="absolute -right-3 -top-3 rounded-full bg-blue-700 px-2 text-white">
               {cartCount}
             </span>
           </Link>
