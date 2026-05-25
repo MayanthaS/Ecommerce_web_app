@@ -130,4 +130,4 @@ The proxy is configured in `vite.config.js` and points to Fake Store API. If the
 
 ## Author
 
-Built by a React developer as a responsive ecommerce project.
+Built by a Mayantha Sapumal as a responsive ecommerce project.
