@@ -131,4 +131,11 @@ The proxy is configured in `vite.config.js` and points to Fake Store API. If the
 ## Author
 
 Built by a Mayantha Sapumal as a responsive ecommerce project.
-<img width="1883" height="905" alt="Project_11 1" src="https://github.com/user-attachments/assets/dc2b3a48-7c9a-465a-b252-cf846f7f7a84" />
+<img width="1836" height="973" alt="Project-11 6" src="https://github.com/user-attachments/assets/17006fed-222b-40de-8a01-7488d3f48213" />
+<img width="1832" height="967" alt="Project-11 5" src="https://github.com/user-attachments/assets/7b205cbe-8799-4ce2-9610-5a3048cdc29c" />
+<img width="1830" height="978" alt="Project-11 4" src="https://github.com/user-attachments/assets/7de32e25-b532-4cd4-94fa-e7a94c0019a8" />
+<img width="1802" height="967" alt="Project-11 3" src="https://github.com/user-attachments/assets/ab81eebe-0181-4e91-b5b0-487e7d8e548a" />
+<img width="1888" height="966" alt="Project-11 2" src="https://github.com/user-attachments/assets/0eda6f72-2c27-462c-a797-1af945325837" />
+<img width="1883" height="905" alt="Project_11 1" src="https://github.com/user-attachments/assets/8e78d6cb-005e-4587-a827-ecaf66629839" />
+
+
